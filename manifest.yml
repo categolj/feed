@@ -1,0 +1,13 @@
+---
+applications:
+  - name: feed
+    memory: 512M
+    path: target/feed.jar
+    buildpack: java_buildpack_offline
+    domains:
+      - ik.am
+    env:
+      blog.api.url: https://blog-api
+      CF_TARGET: https://api.run.pez.pivotal.io
+    services:
+      - eureka-service
