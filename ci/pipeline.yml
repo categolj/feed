@@ -1,0 +1,72 @@
+---
+resources:
+  - name: feed-repo
+    type: git
+    source:
+      uri: https://github.com/categolj/feed
+      branch: master
+  - name: cf
+    type: cf
+    source:
+      api: {{cf-api}}
+      username: {{cf-username}}
+      password: {{cf-password}}
+      organization: {{cf-org}}
+      space: {{cf-space}}
+      skip_cert_check: true
+  - name: m2
+    type: docker-image
+    source:
+      repository: {{docker-repo}}
+
+jobs:
+  - name: feed-unit
+    plan:
+      - get: feed-repo
+        trigger: true
+      - get: m2
+      - task: unit
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: java
+              tag: 8-jdk-alpine 
+          inputs:
+            - name: feed-repo
+              path: repo
+            - name: m2  
+          run:
+            path: sh
+            args: 
+            - repo/ci/tasks/unit.sh
+  - name: feed-deploy
+    plan:
+      - get: feed-repo
+        trigger: true
+        passed: [ feed-unit ]
+      - get: m2
+      - task: package
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: java
+              tag: 8-jdk-alpine 
+          inputs:
+            - name: feed-repo
+              path: repo
+            - name: m2 
+          outputs:
+            - name: output 
+          run:
+            path: sh
+            args: 
+            - repo/ci/tasks/package.sh
+      - put: cf
+        params:
+          manifest: feed-repo/manifest.yml
+          path: output/app.jar
+          current_app_name: feed
