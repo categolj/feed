@@ -15,10 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringApplicationConfiguration(classes = FeedApplication.class)
 @WebIntegrationTest(randomPort = true)
 public class FeedApplicationTests {
-    static {
-        System.setProperty("user.timezone", "Asia/Tokyo");
-    }
-
     @Value("${local.server.port}")
     int port;
 
