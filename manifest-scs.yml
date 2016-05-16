@@ -8,7 +8,7 @@ applications:
       - ik.am
     env:
       CF_TARGET: https://api.run.pez.pivotal.io
-      SPRING_ACTIVE_PROFILES: scs
+      SPRING_PROFILES_ACTIVE: scs
     services:
       - p-config-service
       - p-eureka-service
