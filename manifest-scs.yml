@@ -1,0 +1,15 @@
+---
+applications:
+  - name: feed
+    memory: 512M
+    path: target/feed.jar
+    buildpack: java_buildpack_offline
+    domains:
+      - ik.am
+    env:
+      CF_TARGET: https://api.run.pez.pivotal.io
+      SPRING_ACTIVE_PROFILES: scs
+    services:
+      - p-config-service
+      - p-eureka-service
+      - p-hystrix-dashboard-service

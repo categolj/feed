@@ -46,7 +46,7 @@ jobs:
   - name: feed-deploy
     plan:
       - get: feed-repo
-        trigger: true
+        # trigger: true
         passed: [ feed-unit ]
       - get: m2
       - task: package
@@ -70,5 +70,34 @@ jobs:
       - put: cf
         params:
           manifest: feed-repo/manifest.yml
+          path: output/app.jar
+          current_app_name: feed
+  - name: feed-deploy-scs
+    plan:
+      - get: feed-repo
+        trigger: true
+        passed: [ feed-unit ]
+      - get: m2
+      - task: package
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: java
+              tag: 8-jdk-alpine
+          inputs:
+            - name: feed-repo
+              path: repo
+            - name: m2
+          outputs:
+            - name: output
+          run:
+            path: sh
+            args:
+            - repo/ci/tasks/package.sh
+      - put: cf
+        params:
+          manifest: feed-repo/manifest-scs.yml
           path: output/app.jar
           current_app_name: feed
