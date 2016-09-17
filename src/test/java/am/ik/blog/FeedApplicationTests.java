@@ -1,6 +1,7 @@
 package am.ik.blog;
 
 import com.rometools.rome.feed.rss.Channel;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = FeedApplication.class)
 @WebIntegrationTest(randomPort = true)
+@Ignore
 public class FeedApplicationTests {
     @Value("${local.server.port}")
     int port;
