@@ -7,7 +7,7 @@ applications:
     domains:
       - ik.am
     env:
-      CF_TARGET: https://api.run.pez.pivotal.io
+      TRUST_CERTS: api.run.pez.pivotal.io
       SPRING_PROFILES_ACTIVE: scs
     services:
       - config-service
