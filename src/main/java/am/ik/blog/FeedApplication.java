@@ -35,7 +35,7 @@ public class FeedApplication {
     @RequestMapping("/")
     @SuppressWarnings("unchecked")
     Channel rss() {
-        UriComponents uri = UriComponentsBuilder.fromHttpUrl(apiUrl)
+        UriComponents uri = UriComponentsBuilder.fromUriString(apiUrl)
                 .replacePath("/api/entries")
                 .queryParam("page", 0)
                 .queryParam("size", 10)
