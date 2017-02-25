@@ -1,26 +1,29 @@
 package am.ik.blog;
 
-import com.rometools.rome.feed.rss.Channel;
-import com.rometools.rome.feed.rss.Item;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.rometools.rome.feed.rss.Channel;
+import com.rometools.rome.feed.rss.Item;
 
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -61,11 +64,14 @@ public class FeedApplication {
         return channel;
     }
 
-    @LoadBalanced
-    @Bean
-    RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+	@LoadBalanced
+	@Bean
+	RestTemplate restTemplate(RestTemplateBuilder builder) {
+		return builder.interceptors((request, body, execution) -> {
+			request.getHeaders().add(HttpHeaders.USER_AGENT, "Mozilla/5.0");
+			return execution.execute(request, body);
+		}).build();
+	}
 
     public static void main(String[] args) {
         SpringApplication.run(FeedApplication.class, args);
