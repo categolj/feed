@@ -193,5 +193,5 @@
             </snapshots>
         </repository>
     </repositories>
-
+    <pluginRepositories></pluginRepositories>
 </project>
